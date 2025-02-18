@@ -1,10 +1,10 @@
+// src/Server_json_pizza.java
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -18,10 +18,10 @@ public class Server_json_pizza {
     private String message;
     ObjectMapper mapper = new ObjectMapper();
 
-    private ListaPizze lp=new ListaPizze();
+    private ListaPizze lp = new ListaPizze();
 
     Server_json_pizza() {
-        ArrayList<String> lista=new ArrayList<String>();
+        ArrayList<String> lista = new ArrayList<String>();
         lista.add("margherita");
         lista.add("marinara");
         lp.setListaPizza(lista);
@@ -39,27 +39,30 @@ public class Server_json_pizza {
             out = new PrintWriter(connection.getOutputStream());
             out.flush();
             in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            Command objClient=null;
+            Command objClient = null;
             //4. The two parts communicate via the input and output stream
             do {
                 try {
-					String message=in.readLine();
-                    if(message!=null) {
+                    String message = in.readLine();
+                    if (message != null) {
                         objClient = mapper.readValue(message, Command.class);
                         //determino il comando ricevuto e cosa fare
                         System.out.println("client>" + objClient.getCommandName());
                         if (objClient.getCommandName().equals("getListaPizze")) {
                             sendMessage(mapper.writeValueAsString(lp));
+                        } else if (objClient.getCommandName().equals("getPizza")) {
+                            Pizza pizza = new Pizza();
+                            pizza.setName(objClient.getPizzaName());
+                            sendMessage(mapper.writeValueAsString(pizza));
                         }
-                    }
-                    else {
+                    } else {
                         System.out.println("client ha chiuso la socket, termino comunicazione con quel client");
                         break;
                     }
                 } catch (Exception e) {
                     System.err.println(e);
                 }
-            } while (objClient!=null&&!objClient.getCommandName().equals("bye"));
+            } while (objClient != null && !objClient.getCommandName().equals("bye"));
         } catch (Exception ioException) {
             ioException.printStackTrace();
         } finally {
@@ -77,19 +80,16 @@ public class Server_json_pizza {
     void sendMessage(String msg) {
         try {
             PrintWriter pw = new PrintWriter(out);
-			pw.println(msg);
+            pw.println(msg);
             pw.flush();
             System.out.println("server>" + msg);
         } catch (Exception ioException) {
             ioException.printStackTrace();
         }
-    }
-
-    public static void main(String args[]) {
-        Server_json_pizza server = new Server_json_pizza();
-        while (true) {
-            server.run();
+        public static void main(String args[]) {
+            Server_json_pizza server = new Server_json_pizza();
+            while (true) {
+                server.run();
+            }
         }
     }
-
-}

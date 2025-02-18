@@ -1,26 +1,35 @@
-import java.util.ArrayList;
-import java.util.List;
-
-class Command {
+// src/Command.java
+public class Command {
     private String commandName;
+    private String pizzaName;
+
+    // Getters and setters
     public String getCommandName() {
         return commandName;
     }
+
     public void setCommandName(String commandName) {
         this.commandName = commandName;
     }
 
-}
-
-class ListaPizze {
-
-    List<String> listaPizza = new ArrayList<String>();
-
-    public List<String> getListaPizza() {
-        return listaPizza;
+    public String getPizzaName() {
+        return pizzaName;
     }
 
-    public void setListaPizza(List<String> listaPizza) {
-        this.listaPizza = listaPizza;
+    public void setPizzaName(String pizzaName) {
+        this.pizzaName = pizzaName;
+    }
+}
+
+class Pizza {
+    private String name;
+
+    // Getters and setters
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
